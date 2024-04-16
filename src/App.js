@@ -1,16 +1,10 @@
 import './App.css';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import QuestionSection from './components/QuestionSection';
 import Home from './components/Home';
-import QuestionPage from './components/QuestionPage';
 
 function App() {
   const [data, setData] = useState([]);
-  const [error, setError] = useState(false);
-
-  const [showPage1, setShowPage1] = useState(true);
-  const [showPage2, setShowPage2] = useState(true);
-  const [showPage3, setShowPage3] = useState(true);
 
   const [section1Data, setSection1Data] = useState([]);
   const [section1AnswerStatus, setSection1AnswerStatus] = useState(false);
@@ -25,11 +19,14 @@ function App() {
   const [section4AnswerStatus, setSection4AnswerStatus] = useState(false);
 
   const [startGame, setStartGame] = useState(false);
-  const [displayStartGame, setDisplayStartGame] = useState(false);
+  const [displayStartGame, setDisplayStartGame] = useState(true);
   const [displayQuestions, setDisplayQuestions] = useState(false);
   const [displayFinishGame, setDisplayFinishGame] = useState(false);
+  const [displayNewhGame, setDisplayNewGame] = useState(false);
 
   const [score, setScore] = useState(0);
+  const [answerCounter, setAnswerCounter] = useState(0);
+
   const handleScoreClick = () => {
     setDisplayFinishGame(true);
     setDisplayStartGame(false);
@@ -46,15 +43,17 @@ function App() {
     setScore(0);
     setDisplayFinishGame(false);
     setDisplayQuestions(false);
+    setDisplayStartGame(true);
   };
 
   const handleClick = e => {
     e.preventDefault();
-    const {correctAnswer} = section1Data;
+    // const {correctAnswer} = section1Data;
 
-    setDisplayFinishGame(true);
-    setDisplayStartGame(false);
+    setDisplayFinishGame(false);
     setDisplayQuestions(true);
+    setDisplayStartGame(false);
+
     const answerKey = e.target.id.split('_');
     const [questionKey] = answerKey;
     console.log(questionKey);
@@ -63,7 +62,8 @@ function App() {
         section1Data.correctAnswer.toLowerCase() ==
         e.target.value.toLowerCase();
       setSection1AnswerStatus(ans);
-      console.log(section1AnswerStatus, ans);
+      let _answerCounter = answerCounter + 1;
+      setAnswerCounter(_answerCounter);
     }
 
     if (questionKey == 1) {
@@ -71,18 +71,24 @@ function App() {
         section2Data.correctAnswer.toLowerCase() ==
         e.target.value.toLowerCase();
       setSection2AnswerStatus(ans);
+      let _answerCounter = answerCounter + 1;
+      setAnswerCounter(_answerCounter);
     }
     if (questionKey == 2) {
       let ans =
         section3Data.correctAnswer.toLowerCase() ==
         e.target.value.toLowerCase();
       setSection3AnswerStatus(ans);
+      let _answerCounter = answerCounter + 1;
+      setAnswerCounter(_answerCounter);
     }
     if (questionKey == 3) {
       let ans =
         section4Data.correctAnswer.toLowerCase() ==
         e.target.value.toLowerCase();
       setSection4AnswerStatus(ans);
+      let _answerCounter = answerCounter + 1;
+      setAnswerCounter(_answerCounter);
     }
   };
 
@@ -90,13 +96,13 @@ function App() {
     try {
       const response = await fetch('https://opentdb.com/api.php?amount=5');
       const jsonData = await response.json();
-      console.log(jsonData);
       if (jsonData.response_code === 0) {
-        setStartGame(true);
         const {results} = jsonData;
         setData(results);
+
+        setStartGame(true);
         setDisplayQuestions(true);
-        // setFinishGame(false);
+        setDisplayStartGame(false);
         for (let i = 0; i < results.length; i++) {
           let sectionData = {};
           sectionData.question = results[i].question;
@@ -126,10 +132,9 @@ function App() {
 
   return (
     <div className="App">
-      <Home handler={handleLoad} />
+      <Home showView={displayStartGame} handler={handleLoad} />
       <div className={displayQuestions ? 'display' : 'hidden'}>
         <h2>Questions</h2>
-
         <div>
           <div>
             {startGame
@@ -169,22 +174,27 @@ function App() {
           </div>
         </div>
       </div>
-      <div className={displayFinishGame ? 'display' : 'hidden'}>
+      <div className={answerCounter === 4 ? 'display' : 'hidden'}>
         <button onClick={() => handleScoreClick()}>Score Game</button>
         <div className={displayFinishGame ? 'display' : 'hidden'}>
-          <h1>Score Page</h1>
-          <div>
-            Score:{score}
+          <div className={answerCounter === 4 ? 'display' : 'hidden'}>
+            <h1>Score Page</h1>
+            <div>
+              Score:{score}
+            </div>
+            <button
+              className={displayFinishGame ? 'display' : 'hidden'}
+              onClick={() => {
+                clearData();
+                setDisplayQuestions(false);
+                setDisplayFinishGame(false);
+                setDisplayStartGame(true);
+                setDisplayNewGame(false);
+                setAnswerCounter(0);
+              }}>
+              New Game
+            </button>
           </div>
-          <button
-            className={displayFinishGame ? 'display' : 'hidden'}
-            onClick={() => {
-              clearData();
-              setDisplayQuestions(false);
-              setDisplayFinishGame(false);
-            }}>
-            New Game
-          </button>
         </div>
       </div>
     </div>
