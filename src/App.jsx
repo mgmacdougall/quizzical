@@ -26,13 +26,29 @@ function App() {
   const[displayScoreButton, setDisplayScoreButton]=useState(false);
   const[displayTotal, setDisplayTotal] = useState(false);
 
+
+function shuffle(arr){
+  let currentIndex=arr.length;
+  while(currentIndex!=0){
+
+    let randomIdx = Math.floor(Math.random()*currentIndex);
+    currentIndex--;
+    [arr[currentIndex],arr[randomIdx]]=[arr[randomIdx], arr[currentIndex]]
+  }
+  return arr
+}
+
 function parseIncomingData(answers){
     const{question, correct_answer,incorrect_answers} = answers;
+    console.log(correct_answer+","+incorrect_answers)
     let tmp ={};
     tmp.question = decode(question);
     tmp.answers =incorrect_answers.map(item=>({answer: decode(item), correct: false, selected: false}));
     tmp.answers.push({answer: correct_answer, correct: true, selected: false})
+
+    tmp.answers =shuffle(tmp.answers);
     setDataLoaded(true);
+    console.log(tmp.answers)
     return tmp
   }
 
