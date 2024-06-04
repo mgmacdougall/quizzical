@@ -25,6 +25,7 @@ function App() {
   const[totalScore, setTotalScore] =useState(0)
   const[displayScoreButton, setDisplayScoreButton]=useState(false);
   const[displayTotal, setDisplayTotal] = useState(false);
+  const[displayNewGame, setDisplayNewGame]=useState(true);
 
 
 function shuffle(arr){
@@ -40,7 +41,6 @@ function shuffle(arr){
 
 function parseIncomingData(answers){
     const{question, correct_answer,incorrect_answers} = answers;
-    console.log(correct_answer+","+incorrect_answers)
     let tmp ={};
     tmp.question = decode(question);
     tmp.answers =incorrect_answers.map(item=>({answer: decode(item), correct: false, selected: false}));
@@ -48,7 +48,6 @@ function parseIncomingData(answers){
 
     tmp.answers =shuffle(tmp.answers);
     setDataLoaded(true);
-    console.log(tmp.answers)
     return tmp
   }
 
@@ -60,6 +59,8 @@ function parseIncomingData(answers){
      setQ4Details(parseIncomingData(_data.results[3]))
      setQ5Details(parseIncomingData(_data.results[4]))
      setDisplayScoreButton(true);
+     setDisplayNewGame(false);
+     setDisplayTotal(false);
     }else{
       console.log("Error: no data recieved")
     }
@@ -185,25 +186,24 @@ function parseIncomingData(answers){
   }
   
   function handleScoreClick(e){
-    // console.log(e.target)
-    alert("Clicked scored")
     calculateScore(); 
-   setDisplayTotal(true);
-    
+    setDisplayTotal(true);
+    setDisplayNewGame(true);
+    setDisplayScoreButton(false);
   }
 
 
 function appendScoreGameNode(){
   return(
     <>
-    <button  onClick={(e)=> handleScoreClick(e)}>Score</button>
+    <button className="text-bold text-large" onClick={(e)=> handleScoreClick(e)}>Score</button>
     </>
   )
 }
 function displayScoreNode(){
   return(
     <>
-    <p>Score is: {totalScore}</p>
+    {displayScoreNode?<p className='text-bold text-xl'>Your scored {totalScore}</p>:null}
     </>
   )
  
@@ -211,19 +211,22 @@ function displayScoreNode(){
 
   function buildNode(details, qKey){
     return(
-      <div key={uuidv4()}>
+      <div className='inner-container' key={uuidv4()}>
         <p>{details.question}</p>
-        <div>
-        {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active":"in-active"} onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
+        <div className='inline-container'>
+        {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active btn-standard":"in-active btn-standard"} onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
         </div>
       </div>
     )
   }
   return (
     <>
-    <h1>Quiz Page</h1>
+    <h1 className='text-xxl'>Quiz Page</h1>
       <div>
-        <button onClick={()=>handleLoadGame()}>New Game</button>
+        {
+          displayNewGame? <button className="text-bold text-large" onClick={()=>handleLoadGame()}>New Game</button>:null
+        }
+        
         {
           dataLoaded? buildNode(q1Details,0):null
         }
