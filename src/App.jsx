@@ -26,7 +26,7 @@ function App() {
   const[displayScoreButton, setDisplayScoreButton]=useState(false);
   const[displayTotal, setDisplayTotal] = useState(false);
   const[displayNewGame, setDisplayNewGame]=useState(true);
-
+  const[displayAnswers, setDisplayAnswers] = useState(false);
 
 function shuffle(arr){
   let currentIndex=arr.length;
@@ -69,6 +69,7 @@ function parseIncomingData(answers){
     }
 
   function handleLoadGame(){
+  setDisplayAnswers(false)
     console.log(totalScore) 
     
     
@@ -175,7 +176,7 @@ function parseIncomingData(answers){
     }
   }
   function calculateScore(){
-
+    setDisplayAnswers(true);
     let score=0;
     if(isAnswer1Correct){
       score++;
@@ -222,7 +223,7 @@ function displayScoreNode(){
       <div className='inner-container' key={uuidv4()}>
         <p className='text-large text-bold'>{details.question}</p>
         <div className='inline-container'>
-        {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active btn-standard":"in-active btn-standard"} onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
+        {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active btn-standard": el.correct&& displayAnswers?"active btn-standard correct": "in-active btn-standard" } onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
         </div>
       </div>
     )
