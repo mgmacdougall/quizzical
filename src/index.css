@@ -91,7 +91,12 @@ div#root h1 {
 }
 
 .correct {
-  background-color: #6f82c0;
-  color: whitesmoke;
-  border: 4px double yellow;
+  background-color: #94D7A2;
+  color: #293264;
+  font-size: medium;
+}
+
+.incorrect {
+  background-color: #F8BCBC;
+  color: #293264;
 }

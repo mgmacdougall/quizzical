@@ -70,10 +70,6 @@ function parseIncomingData(answers){
 
   function handleLoadGame(){
   setDisplayAnswers(false)
-    console.log(totalScore) 
-    
-    
-    console.log(totalScore) 
       fetch('https://opentdb.com/api.php?amount=5').then(resp=> resp.json()).then(data=> processData(data)).catch(e=> console.log(e))
   }
 
@@ -212,7 +208,7 @@ function appendScoreGameNode(){
 function displayScoreNode(){
   return(
     <>
-    {displayScoreNode?<p className='text-bold text-xl'>Your scored {totalScore}</p>:null}
+    {displayScoreNode?<p className='text-bold text-xl'>You scored: {totalScore}/5</p>:null}
     </>
   )
  
@@ -223,7 +219,7 @@ function displayScoreNode(){
       <div className='inner-container' key={uuidv4()}>
         <p className='text-large text-bold'>{details.question}</p>
         <div className='inline-container'>
-        {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active btn-standard": el.correct&& displayAnswers?"active btn-standard correct": "in-active btn-standard" } onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
+        {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active btn-standard": el.correct && displayAnswers? "active btn-standard correct": "in-active btn-standard" } onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
         </div>
       </div>
     )
@@ -236,8 +232,8 @@ function displayScoreNode(){
         {
           displayNewGame? <button className="text-bold text-large btn-standard"id='newGame' onClick={()=>handleLoadGame()}>New Game</button>:null
         }
-          {displayScoreButton? appendScoreGameNode():null}
           {displayTotal? displayScoreNode(): null}
+          {displayScoreButton? appendScoreGameNode():null}
        </div>
         {
           dataLoaded? buildNode(q1Details,0): null
