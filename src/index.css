@@ -10,6 +10,7 @@ div#root {
   margin-left: auto;
   margin-right: auto;
   background-color: #F5F7FB;
+  margin-top: 2rem;
 }
 
 div#root h1 {
@@ -28,7 +29,8 @@ div#root h1 {
   text-align: center;
 }
 
-#root>div>button {
+#newGame,
+#calcScore {
   background-color: #4D5B9E;
   color: #F5F7FB;
   width: 190px;
@@ -46,6 +48,12 @@ div#root h1 {
   flex-direction: row;
   justify-content: space-between;
   padding: 0 10px;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .active {
