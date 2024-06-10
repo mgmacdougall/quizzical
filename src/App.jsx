@@ -52,6 +52,7 @@ function parseIncomingData(answers){
   }
 
   const processData= _data=>{
+  
       if(_data.response_code===0){
      setQ1Details(parseIncomingData(_data.results[0]))
      setQ2Details(parseIncomingData(_data.results[1]))
@@ -64,9 +65,14 @@ function parseIncomingData(answers){
     }else{
       console.log("Error: no data recieved")
     }
+    
     }
 
   function handleLoadGame(){
+    console.log(totalScore) 
+    
+    
+    console.log(totalScore) 
       fetch('https://opentdb.com/api.php?amount=5').then(resp=> resp.json()).then(data=> processData(data)).catch(e=> console.log(e))
   }
 
@@ -185,21 +191,23 @@ function parseIncomingData(answers){
     setTotalScore(score);
   }
   
-  function handleScoreClick(e){
+
+  function handleScoreClick(){
+    setTotalScore(0)
     calculateScore(); 
     setDisplayTotal(true);
     setDisplayNewGame(true);
     setDisplayScoreButton(false);
   }
 
-
 function appendScoreGameNode(){
   return(
     <>
-    <button className="text-bold text-large" onClick={(e)=> handleScoreClick(e)}>Score</button>
+    <button className="text-bold text-large btn-standard" id='calcScore' onClick={(e)=> handleScoreClick(e)}>Calculate Score</button>
     </>
   )
 }
+
 function displayScoreNode(){
   return(
     <>
@@ -212,7 +220,7 @@ function displayScoreNode(){
   function buildNode(details, qKey){
     return(
       <div className='inner-container' key={uuidv4()}>
-        <p>{details.question}</p>
+        <p className='text-large text-bold'>{details.question}</p>
         <div className='inline-container'>
         {details.answers.map((el,idx)=> <button key={uuidv4()} className={el.selected? "active btn-standard":"in-active btn-standard"} onClick={(e)=> handleButtonClick(e)} id={qKey+"-"+idx} value={el.answer}>{decode(el.answer)}</button>)}
         </div>
@@ -221,14 +229,17 @@ function displayScoreNode(){
   }
   return (
     <>
-    <h1 className='text-xxl'>Quiz Page</h1>
+    <h1 className='text-xxl'>The Ultimate Quiz Page</h1>
       <div>
+         <div className='flex-center'>
         {
-          displayNewGame? <button className="text-bold text-large" onClick={()=>handleLoadGame()}>New Game</button>:null
+          displayNewGame? <button className="text-bold text-large btn-standard"id='newGame' onClick={()=>handleLoadGame()}>New Game</button>:null
         }
-        
+          {displayScoreButton? appendScoreGameNode():null}
+          {displayTotal? displayScoreNode(): null}
+       </div>
         {
-          dataLoaded? buildNode(q1Details,0):null
+          dataLoaded? buildNode(q1Details,0): null
         }
       
         {
@@ -245,10 +256,10 @@ function displayScoreNode(){
         }
         
       </div>
-        <div>
+        {/* <div>
           {displayScoreButton? appendScoreGameNode():null}
           {displayTotal? displayScoreNode(): null}
-       </div>
+       </div> */}
     </>
   )
 }
