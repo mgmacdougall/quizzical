@@ -89,3 +89,9 @@ div#root h1 {
 .text-xxl {
   font-size: xx-large;
 }
+
+.correct {
+  background-color: #6f82c0;
+  color: whitesmoke;
+  border: 4px double yellow;
+}
